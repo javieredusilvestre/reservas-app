@@ -1,0 +1,94 @@
+/* Card general */
+.cabin-card {
+    width: 100%;
+    max-width: 380px;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.cabin-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+}
+
+/* Imagen */
+.cabin-image {
+    position: relative;
+    width: 100%;
+    height: 230px;
+    overflow: hidden;
+}
+
+.cabin-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: scale 0.3s ease;
+}
+
+.cabin-card:hover .cabin-image img {
+    scale: 1.05;
+}
+
+/* Precio */
+.cabin-price {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: #000000bb;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+/* Info */
+.cabin-info {
+    padding: 20px;
+}
+
+.cabin-info h3 {
+    font-size: 1.35rem;
+    margin-bottom: 6px;
+    color: #1f1f1f;
+}
+
+.cabin-desc {
+    color: #555;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+}
+
+.cabin-capacidad {
+    font-size: 0.95rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Botón */
+.btn-reservar {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    background: #2563eb;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn-reservar:hover {
+    background: #1e4fc4;
+}
+
+.btn-reservar.disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+}
