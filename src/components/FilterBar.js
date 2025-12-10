@@ -1,111 +1,133 @@
-// src/components/FilterBar.js (ACTUALIZADO con Botón Filtrar y Tipos Correctos)
+// src/components/FilterBar.js (FINAL Y RESPONSIVE)
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+
+// Estado inicial de los filtros
+const initialFilters = { 
+    capacity: '', 
+    selectedServices: [], 
+    cabinType: '', 
+    startDate: '', 
+    endDate: '' 
+};
 
 function FilterBar({ initialServices, onFilterChange }) {
-    // Estado de trabajo (lo que el usuario selecciona)
-    const [workingFilters, setWorkingFilters] = useState({ 
-        capacity: '', 
-        selectedServices: [], 
-        cabinType: '', 
-        startDate: '',
-        endDate: ''
-    });
+    const [filters, setFilters] = useState(initialFilters);
 
-    // 🛑 Estado de filtros aplicados (lo que realmente se envía a App.js)
-    const [appliedFilters, setAppliedFilters] = useState(workingFilters);
-
-    // Tipos de cabaña confirmados
-    const CABIN_TYPES = ['pequeña', 'mediana', 'grande']; // <<-- TIPOS CORRECTOS
-
-    // 🛑 Enviar los filtros aplicados a App.js cuando cambien (solo después de clickear Filtrar)
-    useEffect(() => {
-        onFilterChange(appliedFilters);
-    }, [appliedFilters, onFilterChange]);
-
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-
-        if (type === 'checkbox') {
-            const serviceId = value;
-            setWorkingFilters(prev => {
-                const newServices = checked
-                    ? [...prev.selectedServices, serviceId]
-                    : prev.selectedServices.filter(id => id !== serviceId);
-                return { ...prev, selectedServices: newServices };
-            });
-        } else {
-            setWorkingFilters(prev => ({ ...prev, [name]: value }));
-        }
+    // 1. Manejador genérico de cambios de input (tipo, capacidad)
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFilters(prev => ({ 
+            ...prev, 
+            [name]: value 
+        }));
     };
 
-    // 🛑 Manejador para el nuevo botón "Filtrar"
-    const handleApplyFilters = () => {
-        setAppliedFilters(workingFilters);
+    // 2. Manejador de cambio de fechas
+    const handleDateChange = (name, value) => {
+        setFilters(prev => ({ 
+            ...prev, 
+            [name]: value 
+        }));
     };
 
+    // 3. Manejador para los checkboxes de servicios
+    const handleServiceToggle = (serviceId) => {
+        const idStr = String(serviceId);
+        setFilters(prev => {
+            const currentServices = prev.selectedServices;
+            if (currentServices.includes(idStr)) {
+                // Quitar el servicio
+                return { 
+                    ...prev, 
+                    selectedServices: currentServices.filter(id => id !== idStr) 
+                };
+            } else {
+                // Añadir el servicio
+                return { 
+                    ...prev, 
+                    selectedServices: [...currentServices, idStr] 
+                };
+            }
+        });
+    };
+    
+    // 4. Limpiar todos los filtros
     const handleClearFilters = () => {
-        const cleared = { capacity: '', selectedServices: [], cabinType: '', startDate: '', endDate: '' };
-        setWorkingFilters(cleared);
-        setAppliedFilters(cleared); // Aplicar la limpieza inmediatamente
+        setFilters(initialFilters);
     };
+
+    // 5. Efecto para notificar al componente padre (App.js) sobre los cambios
+    useEffect(() => {
+        onFilterChange(filters);
+    }, [filters, onFilterChange]);
+
+    // Opciones estáticas para el filtro de Tipo de Cabaña
+    const cabinTypeOptions = useMemo(() => [
+        { value: '', label: 'Cualquiera' },
+        { value: 'pequeña', label: 'Cabaña Pequeña' },
+        { value: 'mediana', label: 'Cabaña Mediana' },
+        { value: 'grande', label: 'Cabaña Grande' },
+    ], []);
+
 
     return (
-        <div className="filter-bar bg-light p-3 rounded shadow-sm">
-            <h4 className="mb-3">Filtros de Búsqueda </h4>
-            <div className="row g-3">
-                
-                {/* FILTROS DE FECHA */}
-                <div className="col-md-3">
-                    <label className="form-label small fw-bold">Fecha de Inicio:</label>
-                    <input type="date" className="form-control form-control-sm" name="startDate" 
-                           value={workingFilters.startDate} onChange={handleChange} />
-                </div>
-                <div className="col-md-3">
-                    <label className="form-label small fw-bold">Fecha de Fin:</label>
-                    <input type="date" className="form-control form-control-sm" name="endDate" 
-                           value={workingFilters.endDate} onChange={handleChange} />
-                </div>
-                
-                {/* FILTRO POR CAPACIDAD */}
-                <div className="col-md-2">
-                    <label className="form-label small fw-bold">Capacidad Mínima:</label>
-                    <input type="number" className="form-control form-control-sm" name="capacity" 
-                           value={workingFilters.capacity} onChange={handleChange} min="1" />
-                </div>
-                
-                {/* 🛑 FILTRO POR TIPO/TAMAÑO */}
-                <div className="col-md-2">
-                    <label className="form-label small fw-bold">Tipo de Cabaña:</label>
-                    <select className="form-select form-select-sm" name="cabinType" 
-                            value={workingFilters.cabinType} onChange={handleChange}>
-                        <option value="">Cualquier Tipo</option>
-                        {CABIN_TYPES.map(type => (
-                            <option key={type} value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</option>
-                        ))}
-                    </select>
+        <div className="card p-3 mb-4 filter-bar">
+            <h5 className="mb-3">Filtros de Búsqueda</h5>
+            <form>
+                <div className="row g-3">
+                    
+                    {/* Filtro de Tipo de Cabaña */}
+                    <div className="col-12 col-md-3"> {/* 🛑 col-12 en móvil */}
+                        <label className="form-label small">Tipo de Cabaña</label>
+                        <select className="form-select form-select-sm" name="cabinType" value={filters.cabinType} onChange={handleInputChange}>
+                            {cabinTypeOptions.map(option => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Filtro de Capacidad */}
+                    <div className="col-12 col-md-3"> {/* 🛑 col-12 en móvil */}
+                        <label className="form-label small">Capacidad Mínima</label>
+                        <input type="number" className="form-control form-control-sm" name="capacity" 
+                               value={filters.capacity} onChange={handleInputChange} min="1" placeholder="Ej: 4" />
+                    </div>
+
+                    {/* Filtro de Fecha Inicio */}
+                    <div className="col-12 col-md-3"> {/* 🛑 col-12 en móvil */}
+                        <label className="form-label small">Llegada</label>
+                        <input type="date" className="form-control form-control-sm" name="startDate" 
+                               value={filters.startDate} onChange={e => handleDateChange('startDate', e.target.value)} />
+                    </div>
+
+                    {/* Filtro de Fecha Fin */}
+                    <div className="col-12 col-md-3"> {/* 🛑 col-12 en móvil */}
+                        <label className="form-label small">Salida</label>
+                        <input type="date" className="form-control form-control-sm" name="endDate" 
+                               value={filters.endDate} onChange={e => handleDateChange('endDate', e.target.value)} />
+                    </div>
                 </div>
 
-                {/* 🛑 BOTONES DE ACCIÓN */}
-                <div className="col-md-2 d-flex align-items-end btn-group">
-                    <button className="btn btn-sm btn-primary" onClick={handleApplyFilters}>
-                        Filtrar
-                    </button>
-                    <button className="btn btn-sm btn-outline-secondary" onClick={handleClearFilters}>
-                        Limpiar
-                    </button>
+                <div className="mt-3 d-flex justify-content-between align-items-center flex-wrap">
+                    <button type="button" className="btn btn-sm btn-outline-secondary" onClick={handleClearFilters}>Limpiar Filtros</button>
                 </div>
 
-                {/* FILTRO DE SERVICIOS */}
-                <div className="col-12 border-top pt-2">
-                    <label className="form-label small fw-bold">Servicios Incluidos:</label>
-                    <div className="d-flex flex-wrap">
+                {/* Filtro de Servicios */}
+                <div className="mt-3 border-top pt-3">
+                    <label className="form-label small d-block">Servicios ({filters.selectedServices.length} seleccionados)</label>
+                    <div className="d-flex flex-wrap gap-2"> {/* flex-wrap ayuda a evitar scroll horizontal */}
                         {initialServices.map(service => (
-                            <div key={service.id_servicio} className="form-check me-3">
-                                <input className="form-check-input" type="checkbox"
-                                       name="selectedServices" value={service.id_servicio}
-                                       id={`service-${service.id_servicio}`} onChange={handleChange}
-                                       checked={workingFilters.selectedServices.includes(String(service.id_servicio))} />
+                            <div key={service.id_servicio} className="form-check form-check-inline">
+                                <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    id={`service-${service.id_servicio}`}
+                                    checked={filters.selectedServices.includes(String(service.id_servicio))}
+                                    onChange={() => handleServiceToggle(service.id_servicio)}
+                                />
                                 <label className="form-check-label small" htmlFor={`service-${service.id_servicio}`}>
                                     {service.nombre_servicio}
                                 </label>
@@ -113,8 +135,7 @@ function FilterBar({ initialServices, onFilterChange }) {
                         ))}
                     </div>
                 </div>
-                
-            </div>
+            </form>
         </div>
     );
 }

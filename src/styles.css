@@ -1,4 +1,4 @@
-/* src/styles.css - DISEÑO HOTELERO (Luxury Nature) con Fuente Mejorada */
+/* src/styles.css - DISEÑO FINAL Y RESPONSIVE */
 
 :root {
     --color-primary-dark: #2c3e50; /* Gris Oscuro/Azul Naval */
@@ -9,7 +9,7 @@
 }
 
 /* ================================================= */
-/* FONDO DE PÁGINA (Se mantiene) */
+/* FONDO DE PÁGINA Y CONTENEDOR */
 /* ================================================= */
 body {
     background-image: url('https://plus.unsplash.com/premium_photo-1669752275150-098e3d1d9a8b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
@@ -36,18 +36,46 @@ body {
     border-bottom: 2px solid var(--color-primary-dark) !important; 
     background-color: white !important; 
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+    /* Necesario para el responsive en móvil */
+    flex-wrap: wrap; 
 }
 
-/* 🛑 MEJORA DE FUENTE PARA TÍTULO PRINCIPAL */
 .navbar-brand {
-    font-family: Georgia, 'Times New Roman', Times, serif; /* Fuente clásica/serif */
+    font-family: Georgia, 'Times New Roman', Times, serif; 
     font-weight: 700 !important;
-    font-size: 1.8rem !important; /* Ligeramente más grande */
+    font-size: 1.8rem !important; 
     letter-spacing: 1px;
     color: var(--color-primary-dark) !important;
 }
 
-/* === Botones de Autenticación === */
+.main-nav {
+    width: 100%; /* Por defecto en una línea, se ajusta con flex */
+    margin-top: 0;
+}
+
+
+/* === Estilos de Botones y Cards === */
+
+.btn-primary, .btn-primary:focus, .btn-primary:active {
+    background-color: var(--color-primary-dark) !important;
+    border-color: var(--color-primary-dark) !important;
+    color: white !important;
+}
+.btn-primary:hover {
+    background-color: #34495e !important;
+    border-color: #34495e !important;
+}
+
+.btn-success, .btn-success:focus, .btn-success:active {
+    background-color: var(--color-success-hotel) !important;
+    border-color: var(--color-success-hotel) !important;
+    color: white !important;
+}
+.btn-success:hover {
+    background-color: #2ecc71 !important;
+    border-color: #2ecc71 !important;
+}
+
 .btn-auth-group .btn {
     border-radius: 0;
 }
@@ -60,7 +88,6 @@ body {
     border-bottom-right-radius: 5px;
 }
 
-/* Botón de acceso discreto para Admin */
 .btn-admin-access {
     background-color: transparent !important;
     color: var(--color-admin-access) !important;
@@ -72,40 +99,103 @@ body {
     color: white !important;
 }
 
-/* Resto de estilos se mantienen... */
-.btn-primary, .btn-primary:focus, .btn-primary:active {
-    background-color: var(--color-primary-dark) !important;
-    border-color: var(--color-primary-dark) !important;
-    color: white !important;
+/* Estilos de las tarjetas de cabaña */
+.cabin-image-header {
+    border-radius: 10px 10px 0 0;
 }
-/* ... (otros estilos de botones y cards) ... */
-/* src/styles.css (Extracto de la sección de Modales) */
 
+.card {
+    border: none !important;
+    border-radius: 10px; 
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-body .cabin-price {
+    color: var(--color-success-hotel) !important; 
+    font-weight: 700 !important;
+    font-size: 1.6em !important;
+}
+
+.border-start.border-5.border-primary { 
+    border-left-color: var(--color-success-hotel) !important;
+}
+
+/* === Modales y Overlays === */
 .reservation-form-overlay {
-    /* 🛑 Propiedades CRÍTICAS para que aparezca sobre todo */
-    position: fixed; /* Asegura que se fije al viewport, no al documento */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    
-    /* Z-index alto: debe ser mayor que cualquier otro elemento */
-    z-index: 9999; /* Usa un valor alto para garantizar la superposición */
-    
-    /* El resto de estilos se mantienen para el fondo oscuro */
     background-color: rgba(44, 62, 80, 0.8); 
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 9999;
 }
-
 .reservation-form, .login-modal {
-    /* El contenido del modal necesita un fondo sólido y z-index menor al overlay */
     background-color: white;
     padding: 35px;
     border-radius: 10px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
     width: 90%;
     max-width: 450px;
-    z-index: 10000; /* Debe ser más alto que el overlay, aunque el overlay lo contenga */
+}
+
+
+/* ================================================= */
+/* 🛑 MEDIA QUERIES PARA RESPONSIVE 🛑 */
+/* ================================================= */
+
+@media (max-width: 768px) {
+    
+    /* 1. Contenedor principal: reducir relleno y márgenes */
+    .app-container {
+        margin: 5px;
+        padding: 10px;
+        border-radius: 0;
+    }
+    
+    /* 🛑 FIX CRÍTICO DEL TÍTULO: Apilar el título y la navegación */
+    .navbar {
+        flex-direction: column; 
+        align-items: flex-start; /* Alinea el título a la izquierda */
+        padding: 10px !important;
+    }
+
+    /* 2. Título: reducir tamaño para que quepa */
+    .navbar-brand {
+        font-size: 1.2rem !important;
+        white-space: normal; 
+        margin-right: auto;
+    }
+    
+    /* 3. Barra de Navegación de Botones: forzar salto de línea y distribución */
+    .main-nav {
+        width: 100%;
+        margin-top: 10px; /* Separación del título */
+        justify-content: space-between !important; 
+        gap: 5px; 
+        flex-wrap: wrap; 
+    }
+    
+    /* 4. Filtros: Ajustar márgenes para que la barra de filtros no se rompa */
+    .filter-bar .row > * {
+        margin-bottom: 8px; 
+    }
+
+    /* 5. Cabaña Card: Reducir tamaño de fuente en la tarjeta para que quepa la info */
+    .card-body .cabin-price {
+        font-size: 1.2em !important;
+    }
+    
+    .card-body .card-title {
+        font-size: 1.05rem;
+    }
+
+    /* Modales en móvil: usar ancho completo */
+    .reservation-form, .login-modal {
+        padding: 20px;
+        width: 95%;
+    }
 }
