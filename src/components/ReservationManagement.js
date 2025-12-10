@@ -1,7 +1,5 @@
-// src/components/ReservationManagement.js
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient'; // Nota: La ruta a supabaseClient.js es '../supabaseClient'
-
+import { supabase } from '../supabaseClient'; 
 function ReservationManagement({ cabins }) {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,18 +8,16 @@ function ReservationManagement({ cabins }) {
     fetchReservations();
   }, []);
 
-  // Función para obtener todas las reservas (Gestionar Reservas RF3/RF4)
+
   const fetchReservations = async () => {
     setLoading(true);
-    // Necesitamos unir (JOIN) la tabla RESERVA con CABANA
     const { data, error } = await supabase
       .from('RESERVA')
       .select(`
         *,
         CABANA (ID_Cabana, Tipo, Precio_Base, Capacidad)
       `)
-      .order('Fecha_Reserva', { ascending: false }); // Ordenar por fecha de creación
-
+      .order('Fecha_Reserva', { ascending: false }); 
     if (error) {
       console.error('Error al cargar las reservas:', error);
       alert('Error al cargar el historial de reservas.');
@@ -31,14 +27,13 @@ function ReservationManagement({ cabins }) {
     setLoading(false);
   };
   
-  // Función para cancelar una reserva (RF4 - Administrador)
+ 
   const handleCancelReservation = async (reservationId, cabinId) => {
     if (!window.confirm('¿Está seguro de que desea CANCELAR esta reserva? Esta acción es irreversible.')) {
       return;
     }
 
     try {
-      // 1. Marcar la reserva como Cancelada
       const { error: reserveError } = await supabase
         .from('RESERVA')
         .update({ Estado_Reserva: 'Cancelada' })
@@ -46,7 +41,6 @@ function ReservationManagement({ cabins }) {
 
       if (reserveError) throw reserveError;
       
-      // 2. Liberar la cabaña (Actualizar el estado de la cabaña a 'Disponible')
       const { error: cabinError } = await supabase
         .from('CABANA')
         .update({ Estado: 'Disponible' })
@@ -55,8 +49,7 @@ function ReservationManagement({ cabins }) {
       if (cabinError) throw cabinError;
 
       alert(`Reserva #${reservationId} cancelada y Cabaña liberada.`);
-      fetchReservations(); // Refrescar la lista de reservas
-      
+      fetchReservations(); 
     } catch (error) {
       console.error('Error durante la cancelación:', error);
       alert('Ocurrió un error al intentar cancelar la reserva y liberar la cabaña.');
@@ -101,7 +94,7 @@ function ReservationManagement({ cabins }) {
                 </span>
               </td>
               <td>
-                {/* Evita cancelar reservas finalizadas/canceladas */}
+
                 {res.Estado_Reserva === 'Confirmada' || res.Estado_Reserva === 'Pendiente' ? (
                   <button 
                     className="action-button cancel-button"

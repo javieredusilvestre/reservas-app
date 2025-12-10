@@ -1,4 +1,4 @@
-// src/components/CabinManagement.js
+
 import React, { useState } from 'react';
 import { supabase } from '../supabaseClient';
 
@@ -36,11 +36,9 @@ function CabinManagement({ cabins, services, refreshCabins }) {
     });
   };
 
-  // RF4: Guardar la modificación de tarifas y atributos
   const saveChanges = async (id) => {
     const { Tipo, Precio_Base, Capacidad, Descripcion, Estado, Servicios } = formData;
     
-    // 1. Actualizar la tabla CABANA
     const { error: cabinError } = await supabase
       .from('CABANA')
       .update({
@@ -58,7 +56,7 @@ function CabinManagement({ cabins, services, refreshCabins }) {
       return;
     }
 
-    // 2. Actualizar la relación muchos a muchos CABANA_SERVICIO
+
     const { error: deleteError } = await supabase
       .from('CABANA_SERVICIO')
       .delete()

@@ -1,15 +1,14 @@
-// src/components/LoginModal.js (CORREGIDO - Pide Email y Contraseña)
 
 import React, { useState } from 'react';
 
 function LoginModal({ onLogin, onClose }) {
-    // 🛑 Inicialización de estados para ambos campos
+
     const [email, setEmail] = useState(''); 
     const [password, setPassword] = useState('');
     
     const handleSubmit = (e) => {
         e.preventDefault();
-        // 🛑 Pasamos ambos valores a la función de login en App.js
+
         onLogin(email, password); 
         setEmail('');
         setPassword('');
@@ -22,7 +21,7 @@ function LoginModal({ onLogin, onClose }) {
                 
                 <form onSubmit={handleSubmit}>
                     
-                    {/* CAMPO DE CORREO ELECTRÓNICO */}
+
                     <div className="mb-3">
                         <label htmlFor="email-input" className="form-label">Correo Electrónico:</label>
                         <input
@@ -35,7 +34,7 @@ function LoginModal({ onLogin, onClose }) {
                         />
                     </div>
 
-                    {/* CAMPO DE CONTRASEÑA */}
+
                     <div className="mb-3">
                         <label htmlFor="password-input" className="form-label">Contraseña:</label>
                         <input

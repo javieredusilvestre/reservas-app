@@ -1,9 +1,9 @@
-// src/components/AdminDashboard.js (FINAL con nombre corregido)
+
 
 import React, { useState } from 'react';
 import { supabase } from '../supabaseClient'; 
 
-// Formato de moneda para Chile (se mantiene)
+
 const formatCurrency = (amount) => {
     const num = Number(amount) || 0; 
     return new Intl.NumberFormat('es-CL', {
@@ -13,9 +13,6 @@ const formatCurrency = (amount) => {
     }).format(num);
 };
 
-// =========================================================
-// FUNCIONES CRUD REALES EN BASE DE DATOS (Se mantienen)
-// =========================================================
 
 async function createCabinInDB(newCabin) {
     const { data, error } = await supabase
@@ -48,7 +45,7 @@ async function deleteCabinInDB(id) {
 }
 
 async function syncCabinServices(cabinId, selectedServiceIds) {
-    // 1. Eliminar todos los servicios existentes para esta cabaña
+
     const { error: deleteError } = await supabase
         .from('cabana_servicio')
         .delete()
@@ -56,7 +53,7 @@ async function syncCabinServices(cabinId, selectedServiceIds) {
 
     if (deleteError) throw deleteError;
 
-    // 2. Insertar las nuevas relaciones si hay servicios seleccionados
+
     if (selectedServiceIds && selectedServiceIds.length > 0) {
         const newRelations = selectedServiceIds.map(serviceId => ({
             id_cabana: cabinId,
@@ -105,7 +102,6 @@ function AdminDashboard({ cabins, services, refreshCabins }) {
         }));
     };
 
-    // FUNCIÓN REAL: CREAR CABAÑA
     const handleCreateCabin = async (e) => {
         e.preventDefault();
         try {
@@ -126,17 +122,16 @@ function AdminDashboard({ cabins, services, refreshCabins }) {
             precio_base: cabin.precio_base || 0,
             capacidad: cabin.capacidad || 1,
         });
-        // CARGAR SERVICIOS ACTUALES
+
         setSelectedServiceIds(cabin.Servicios.map(String));
     };
 
-    // FUNCIÓN REAL: ACTUALIZAR CABAÑA (CON GESTIÓN DE SERVICIOS)
     const handleUpdateCabin = async (e) => {
         e.preventDefault();
         try {
             const id = editingCabin;
             
-            // 1. EXCLUIR PROPIEDADES DE RELACIÓN
+
             const { 
                 id_cabana, 
                 Servicios, 
@@ -145,10 +140,10 @@ function AdminDashboard({ cabins, services, refreshCabins }) {
                 ...updatedData 
             } = editForm; 
             
-            // 2. ACTUALIZAR COLUMNAS SIMPLES
+
             await updateCabinInDB(id, updatedData);
 
-            // 3. SINCRONIZAR SERVICIOS (Tabla cabana_servicio)
+    
             await syncCabinServices(id, selectedServiceIds);
 
             alert(`Cabaña #${id} actualizada y servicios sincronizados exitosamente.`);
@@ -175,10 +170,10 @@ function AdminDashboard({ cabins, services, refreshCabins }) {
 
     return (
         <div className="admin-dashboard">
-            {/* 🛑 TÍTULO CORREGIDO */}
+
             <h2 className="mb-4">Panel de Administración</h2> 
 
-            {/* 1. Formulario de Creación (Se mantiene) */}
+       
             <div className="card mb-4 p-4 shadow-sm">
                 <h4 className="card-title">Crear Nueva Cabaña</h4>
                 <form onSubmit={handleCreateCabin} className="row g-3">
@@ -222,7 +217,6 @@ function AdminDashboard({ cabins, services, refreshCabins }) {
                 </form>
             </div>
 
-            {/* 2. Listado de Cabañas para Edición/Eliminación */}
             <div className="card p-4 shadow-sm">
                 <h4 className="card-title">Gestión de Cabañas Existentes</h4>
                 <div className="table-responsive">
@@ -265,7 +259,6 @@ function AdminDashboard({ cabins, services, refreshCabins }) {
                                             </>
                                         )}
                                     </tr>
-                                    {/* FILA ADICIONAL PARA GESTIÓN DE SERVICIOS */}
                                     {editingCabin === cabin.id_cabana && (
                                         <tr>
                                             <td colSpan="6" className="bg-light p-3">
@@ -288,9 +281,6 @@ function AdminDashboard({ cabins, services, refreshCabins }) {
     );
 }
 
-// =========================================================
-// COMPONENTES AUXILIARES (Se mantienen)
-// =========================================================
 
 const AdminServiceEditor = ({ allServices, selectedServiceIds, setSelectedServiceIds }) => {
     

@@ -1,4 +1,3 @@
-// src/components/ClientLoginModal.js
 
 import React, { useState } from 'react';
 
@@ -8,7 +7,6 @@ function ClientLoginModal({ onLogin, onClose }) {
     
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Llama a la función de login en App.js con email y password
         onLogin(email, password); 
     };
 
@@ -31,8 +29,7 @@ function ClientLoginModal({ onLogin, onClose }) {
                     </div>
 
                     <div className="mb-3">
-                        {/* Nota: En tu esquema, la contraseña es "Solo para administrador". 
-                           Aquí la incluimos, pero App.js la ignorará por ahora o usará una contraseña mock. */}
+
                         <label htmlFor="password-input-client" className="form-label">Contraseña:</label>
                         <input
                             type="password"

@@ -1,15 +1,13 @@
-// src/components/RegisterModal.js (ACTUALIZADO CON APELLIDO Y TELÉFONO)
 
 import React, { useState } from 'react';
 import { supabase } from '../supabaseClient'; 
 
 function RegisterModal({ onClose, onSuccessfulRegistration }) {
     const [nombre, setNombre] = useState('');
-    const [apellido, setApellido] = useState(''); // 🛑 NUEVO ESTADO
+    const [apellido, setApellido] = useState(''); 
     const [email, setEmail] = useState('');
     const [contrasena, setContrasena] = useState('');
-    const [telefono, setTelefono] = useState(''); // 🛑 NUEVO ESTADO
-    
+    const [telefono, setTelefono] = useState(''); 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -24,10 +22,10 @@ function RegisterModal({ onClose, onSuccessfulRegistration }) {
                 .insert([
                     { 
                         nombre: nombre, 
-                        apellido: apellido, // 🛑 ENVIAR APELLIDO
+                        apellido: apellido, 
                         email: email, 
                         contrasena: contrasena, 
-                        telefono: telefono // 🛑 ENVIAR TELÉFONO
+                        telefono: telefono 
                     }
                 ])
                 .select();
@@ -36,7 +34,6 @@ function RegisterModal({ onClose, onSuccessfulRegistration }) {
 
             alert('¡Registro exitoso! Ya puedes iniciar sesión.');
             
-            // Llama a la función de éxito en App.js
             onSuccessfulRegistration(data[0]); 
 
         } catch (err) {
@@ -58,7 +55,6 @@ function RegisterModal({ onClose, onSuccessfulRegistration }) {
                 <form onSubmit={handleRegister}>
                     
                     <div className="row">
-                        {/* Campo Nombre */}
                         <div className="col-md-6 mb-3">
                             <label htmlFor="nombre" className="form-label small">Nombre</label>
                             <input 
@@ -70,7 +66,6 @@ function RegisterModal({ onClose, onSuccessfulRegistration }) {
                                 required 
                             />
                         </div>
-                        {/* Campo Apellido */}
                         <div className="col-md-6 mb-3">
                             <label htmlFor="apellido" className="form-label small">Apellido</label>
                             <input 
@@ -97,7 +92,6 @@ function RegisterModal({ onClose, onSuccessfulRegistration }) {
                     </div>
                     
                     <div className="row">
-                        {/* Campo Contraseña */}
                         <div className="col-md-6 mb-3">
                             <label htmlFor="contrasena" className="form-label small">Contraseña</label>
                             <input 
@@ -109,11 +103,11 @@ function RegisterModal({ onClose, onSuccessfulRegistration }) {
                                 required 
                             />
                         </div>
-                        {/* Campo Teléfono */}
+
                         <div className="col-md-6 mb-3">
                             <label htmlFor="telefono" className="form-label small">Teléfono</label>
                             <input 
-                                type="tel" // Usar 'tel' para móviles/teléfonos
+                                type="tel" 
                                 className="form-control form-control-sm" 
                                 id="telefono" 
                                 value={telefono} 

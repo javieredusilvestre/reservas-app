@@ -1,4 +1,3 @@
-/* Card general */
 .cabin-card {
     width: 100%;
     max-width: 380px;
@@ -15,7 +14,6 @@
     box-shadow: 0 12px 24px rgba(0,0,0,0.12);
 }
 
-/* Imagen */
 .cabin-image {
     position: relative;
     width: 100%;
@@ -34,7 +32,6 @@
     scale: 1.05;
 }
 
-/* Precio */
 .cabin-price {
     position: absolute;
     bottom: 12px;
@@ -47,7 +44,6 @@
     font-weight: 600;
 }
 
-/* Info */
 .cabin-info {
     padding: 20px;
 }
@@ -70,7 +66,6 @@
     margin-bottom: 20px;
 }
 
-/* Botón */
 .btn-reservar {
     width: 100%;
     padding: 12px;

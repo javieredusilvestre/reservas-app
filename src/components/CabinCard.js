@@ -1,8 +1,8 @@
-// src/components/CabinCard.js (FINAL Y FUNCIONAL)
+
 import React, { useState, useMemo } from 'react';
 import ReservationForm from './ReservationForm';
 
-// Función para formatear el precio usando la localización Chilena (es-CL)
+
 const formatCurrency = (amount) => {
     if (isNaN(amount) || amount === null) return 'N/A';
     
@@ -15,19 +15,19 @@ const formatCurrency = (amount) => {
 
 
 function CabinCard({ cabin, services, onReserve }) {
-    // Estados para la reserva por fechas
+
     const [isFormVisible, setIsFormVisible] = useState(false);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [statusMessage, setStatusMessage] = useState('');
 
-    // Cálculo de precios
+
     const includedServices = useMemo(() => 
         services.filter(service => cabin.Servicios.includes(service.id_servicio))
     , [cabin.Servicios, services]);
     
     const calculatePrice = () => {
-        // Lógica simplificada: Solo se usa el precio base.
+
         return cabin.precio_base; 
     };
     const pricePerNight = calculatePrice();
@@ -63,7 +63,6 @@ function CabinCard({ cabin, services, onReserve }) {
 
 
     const handleFinalReservation = (formData) => {
-        // Cálculo de días y precio total
         const diffTime = Math.abs(new Date(endDate) - new Date(startDate));
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
         const totalPrice = pricePerNight * diffDays; 
@@ -89,8 +88,7 @@ function CabinCard({ cabin, services, onReserve }) {
 
     return (
         <div className={`card h-100 shadow-sm border-start border-5 ${cabin.estado === 'Disponible' ? 'border-primary' : 'border-secondary'}`}> 
-            
-            {/* HEADER DE IMAGEN */}
+
             {cabin.url_imagen && (
                 <div 
                     className="cabin-image-header"
@@ -112,8 +110,7 @@ function CabinCard({ cabin, services, onReserve }) {
             )}
 
             <div className="card-body d-flex flex-column">
-                
-                {/* ENCABEZADO: TIPO, ID y PRECIO */}
+
                 <div className="d-flex justify-content-between align-items-center mb-2">
                     <h5 className="card-title mb-0">{cabin.tipo} - Cabaña #{cabin.id_cabana}</h5>
                     <span className="cabin-price text-success fw-bold fs-5">
@@ -121,10 +118,8 @@ function CabinCard({ cabin, services, onReserve }) {
                     </span>
                 </div>
 
-                {/* DESCRIPCIÓN */}
                 <p className="card-text text-muted mb-3">{cabin.descripcion}</p>
                 
-                {/* DETALLES (CAPACIDAD, ESTADO) */}
                 <div className="row mb-3">
                     <div className="col">
                         <small className="d-block fw-bold">Capacidad:</small>
@@ -134,7 +129,7 @@ function CabinCard({ cabin, services, onReserve }) {
                         <small className="d-block fw-bold">Estado:</small>
                         <span className={`badge ${statusClass}`}>{cabin.estado}</span>
                         
-                        {/* MOSTRAR PRÓXIMA DISPONIBILIDAD */}
+
                         {cabin.estado === 'Reservada' && cabin.nextAvailableDate && (
                              <small className="text-warning d-block mt-1">
                                  Libre desde: **{new Date(cabin.nextAvailableDate).toLocaleDateString('es-CL')}**
@@ -148,7 +143,6 @@ function CabinCard({ cabin, services, onReserve }) {
                     </div>
                 </div>
 
-                {/* SERVICIOS INCLUIDOS (SIMPLIFICADO) */}
                 <div className="mb-3">
                     <small className="d-block fw-bold">Servicios Incluidos:</small>
                     <ul className="list-unstyled small">
@@ -160,7 +154,6 @@ function CabinCard({ cabin, services, onReserve }) {
                     </ul>
                 </div>
                 
-                {/* ZONA DE RESERVA (CONDICIONAL) */}
                 {cabin.estado !== "En Mantenimiento" ? (
                     <div className="mt-auto pt-3 border-top">
                         <small className="d-block fw-bold mb-2">Verificar Fechas:</small>

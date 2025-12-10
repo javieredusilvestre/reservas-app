@@ -1,24 +1,17 @@
-/* src/styles.css - DISEÑO FINAL, RESPONSIVE Y CON NUEVAS FUENTES */
-
 :root {
-    --color-primary-dark: #2c3e50; /* Gris Oscuro/Azul Naval */
+    --color-primary-dark: #2c3e50;
     --color-accent: #3498db; 
-    --color-success-hotel: #27ae60; /* Verde Bosque para éxito */
-    --color-admin-access: #95a5a6; /* Gris piedra para el botón Admin */
+    --color-success-hotel: #27ae60;
+    --color-admin-access: #95a5a6;
     --color-text-muted: #7f8c8d;
 }
 
-/* ================================================= */
-/* FONDO DE PÁGINA Y CONTENEDOR */
-/* ================================================= */
 body {
     background-image: url('https://plus.unsplash.com/premium_photo-1669752275150-098e3d1d9a8b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
     background-size: cover;          
     background-repeat: no-repeat;    
     background-attachment: fixed;    
     background-position: center;     
-    
-    /* 🛑 Nueva Fuente para el cuerpo: sans-serif moderna */
     font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
     color: var(--color-primary-dark);
 }
@@ -32,7 +25,6 @@ body {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); 
 }
 
-/* === HEADER y Navegación === */
 .navbar {
     border-bottom: 2px solid var(--color-primary-dark) !important; 
     background-color: white !important; 
@@ -40,11 +32,9 @@ body {
     flex-wrap: wrap; 
 }
 
-/* 🛑 Estilo para la línea principal del título (Reserva de Cabañas) */
 .navbar-brand {
-    /* Nueva fuente serif elegante */
     font-family: 'Georgia', 'Times New Roman', Times, serif; 
-    font-weight: 900 !important; /* Más negrita */
+    font-weight: 900 !important;
     font-size: 1.8rem !important; 
     line-height: 1; 
     letter-spacing: 1px;
@@ -52,10 +42,9 @@ body {
     padding-top: 5px; 
 }
 
-/* 🛑 Estilo para la sub-línea del título (Parque Futangue) */
 .subtitle-brand {
-    font-family: 'Poppins', sans-serif; /* Fuente sans-serif para contraste */
-    font-size: 0.5em; /* Más pequeño que el título principal */
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.5em;
     font-weight: 500; 
     display: block; 
     letter-spacing: 0.5px;
@@ -67,9 +56,6 @@ body {
     width: 100%;
     margin-top: 0;
 }
-
-
-/* === Estilos de Botones y Cards === */
 
 .btn-primary, .btn-primary:focus, .btn-primary:active {
     background-color: var(--color-primary-dark) !important;
@@ -114,7 +100,6 @@ body {
     color: white !important;
 }
 
-/* Estilos de las tarjetas de cabaña */
 .cabin-image-header {
     border-radius: 10px 10px 0 0;
 }
@@ -123,6 +108,25 @@ body {
     border: none !important;
     border-radius: 10px; 
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out; 
+    animation: fadeInSlideUp 0.5s ease-out forwards;
+    opacity: 0;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes fadeInSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .card-body .cabin-price {
@@ -135,7 +139,6 @@ body {
     border-left-color: var(--color-success-hotel) !important;
 }
 
-/* === Modales y Overlays === */
 .reservation-form-overlay {
     position: fixed;
     top: 0;
@@ -157,38 +160,28 @@ body {
     max-width: 450px;
 }
 
-
-/* ================================================= */
-/* 🛑 MEDIA QUERIES PARA RESPONSIVE 🛑 */
-/* ================================================= */
-
 @media (max-width: 768px) {
-    
-    /* 1. Contenedor principal: reducir relleno y márgenes */
     .app-container {
         margin: 5px;
         padding: 10px;
         border-radius: 0;
     }
     
-    /* FIX CRÍTICO DEL TÍTULO: Apilar el título y la navegación */
     .navbar {
         flex-direction: column; 
         align-items: flex-start; 
         padding: 10px 5px !important; 
     }
 
-    /* 2. Título: reducir tamaño a un valor más pequeño */
     .navbar-brand {
-        font-size: 1.3rem !important; /* Título principal aún más pequeño en móvil */
+        font-size: 1.3rem !important; 
         width: 100%; 
         margin-right: 0 !important; 
     }
     .subtitle-brand {
-        font-size: 0.45em; /* Subtítulo muy pequeño en móvil */
+        font-size: 0.45em; 
     }
     
-    /* 3. Barra de Navegación de Botones: forzar salto de línea y distribución */
     .main-nav {
         width: 100%;
         margin-top: 10px; 
@@ -200,7 +193,6 @@ body {
         padding: 0;
     }
 
-    /* FIX CRÍTICO PARA GRUPOS DE BOTONES: Asegura que se distribuyan bien */
     .main-nav .btn-group, 
     .main-nav .btn-auth-group, 
     .main-nav .btn-admin-access, 
@@ -212,19 +204,16 @@ body {
         width: auto; 
     }
     
-    /* Regla para asegurar que el mensaje "Hola, [Nombre]" funcione */
     .main-nav > span {
         width: 100%;
         text-align: center;
         margin-bottom: 5px;
     }
     
-    /* 4. Filtros: Ajustar márgenes */
     .filter-bar .row > * {
         margin-bottom: 8px; 
     }
 
-    /* 5. Cabaña Card: Reducir tamaño de fuente en la tarjeta */
     .card-body .cabin-price {
         font-size: 1.2em !important;
     }
@@ -233,7 +222,6 @@ body {
         font-size: 1.05rem;
     }
 
-    /* Modales en móvil: usar ancho completo */
     .reservation-form, .login-modal {
         padding: 20px;
         width: 95%;

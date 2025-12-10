@@ -16,13 +16,13 @@ function ReservationForm({ cabinId, onSubmit, onClose }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Solo valida el Email (si es que se requiere)
+
     if (!formData.Email) {
       alert("Por favor, ingrese un Email para la confirmación de la reserva.");
       return;
     }
 
-    // Llama a handleFinalReservation en CabinCard.js
+
     onSubmit(formData); 
   };
 
@@ -31,13 +31,12 @@ function ReservationForm({ cabinId, onSubmit, onClose }) {
       <form onSubmit={handleSubmit} className="reservation-form">
         <h4 className="mb-4">Confirmación de Datos (RF3/RF5)</h4>
         
-        {/* 🛑 SOLO PEDIMOS EMAIL para la confirmación RF5 */}
         <div className="mb-3">
             <label className="form-label">Email (Confirmación):</label>
             <input type="email" className="form-control" name="Email" value={formData.Email} onChange={handleChange} required />
         </div>
         
-        <p className="small text-muted">Usted está reservando para {cabinId} del {cabinId} al {cabinId}</p> {/* Se pueden quitar estas referencias a cabinId si no se necesitan */}
+        <p className="small text-muted">Usted está reservando para {cabinId} del {cabinId} al {cabinId}</p> 
         <p className="small text-danger">⚠️ Asegúrese de haber iniciado sesión como cliente antes de pagar.</p>
         
         <div className="d-flex justify-content-between mt-4">

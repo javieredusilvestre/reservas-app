@@ -1,8 +1,6 @@
-// src/components/FilterBar.js (FINAL Y RESPONSIVE)
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 
-// Estado inicial de los filtros
 const initialFilters = { 
     capacity: '', 
     selectedServices: [], 
@@ -14,7 +12,6 @@ const initialFilters = {
 function FilterBar({ initialServices, onFilterChange }) {
     const [filters, setFilters] = useState(initialFilters);
 
-    // 1. Manejador genérico de cambios de input (tipo, capacidad)
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFilters(prev => ({ 
@@ -23,7 +20,6 @@ function FilterBar({ initialServices, onFilterChange }) {
         }));
     };
 
-    // 2. Manejador de cambio de fechas
     const handleDateChange = (name, value) => {
         setFilters(prev => ({ 
             ...prev, 
@@ -31,19 +27,16 @@ function FilterBar({ initialServices, onFilterChange }) {
         }));
     };
 
-    // 3. Manejador para los checkboxes de servicios
     const handleServiceToggle = (serviceId) => {
         const idStr = String(serviceId);
         setFilters(prev => {
             const currentServices = prev.selectedServices;
             if (currentServices.includes(idStr)) {
-                // Quitar el servicio
                 return { 
                     ...prev, 
                     selectedServices: currentServices.filter(id => id !== idStr) 
                 };
             } else {
-                // Añadir el servicio
                 return { 
                     ...prev, 
                     selectedServices: [...currentServices, idStr] 
@@ -52,17 +45,14 @@ function FilterBar({ initialServices, onFilterChange }) {
         });
     };
     
-    // 4. Limpiar todos los filtros
     const handleClearFilters = () => {
         setFilters(initialFilters);
     };
 
-    // 5. Efecto para notificar al componente padre (App.js) sobre los cambios
     useEffect(() => {
         onFilterChange(filters);
     }, [filters, onFilterChange]);
 
-    // Opciones estáticas para el filtro de Tipo de Cabaña
     const cabinTypeOptions = useMemo(() => [
         { value: '', label: 'Cualquiera' },
         { value: 'pequeña', label: 'Cabaña Pequeña' },
@@ -77,8 +67,7 @@ function FilterBar({ initialServices, onFilterChange }) {
             <form>
                 <div className="row g-3">
                     
-                    {/* Filtro de Tipo de Cabaña */}
-                    <div className="col-12 col-md-3"> {/* 🛑 col-12 en móvil */}
+                    <div className="col-12 col-md-3"> 
                         <label className="form-label small">Tipo de Cabaña</label>
                         <select className="form-select form-select-sm" name="cabinType" value={filters.cabinType} onChange={handleInputChange}>
                             {cabinTypeOptions.map(option => (
@@ -89,22 +78,21 @@ function FilterBar({ initialServices, onFilterChange }) {
                         </select>
                     </div>
 
-                    {/* Filtro de Capacidad */}
-                    <div className="col-12 col-md-3"> {/* 🛑 col-12 en móvil */}
+                    <div className="col-12 col-md-3"> 
                         <label className="form-label small">Capacidad Mínima</label>
                         <input type="number" className="form-control form-control-sm" name="capacity" 
                                value={filters.capacity} onChange={handleInputChange} min="1" placeholder="Ej: 4" />
                     </div>
 
-                    {/* Filtro de Fecha Inicio */}
-                    <div className="col-12 col-md-3"> {/* 🛑 col-12 en móvil */}
+
+                    <div className="col-12 col-md-3"> 
                         <label className="form-label small">Llegada</label>
                         <input type="date" className="form-control form-control-sm" name="startDate" 
                                value={filters.startDate} onChange={e => handleDateChange('startDate', e.target.value)} />
                     </div>
 
-                    {/* Filtro de Fecha Fin */}
-                    <div className="col-12 col-md-3"> {/* 🛑 col-12 en móvil */}
+
+                    <div className="col-12 col-md-3"> 
                         <label className="form-label small">Salida</label>
                         <input type="date" className="form-control form-control-sm" name="endDate" 
                                value={filters.endDate} onChange={e => handleDateChange('endDate', e.target.value)} />
@@ -115,10 +103,9 @@ function FilterBar({ initialServices, onFilterChange }) {
                     <button type="button" className="btn btn-sm btn-outline-secondary" onClick={handleClearFilters}>Limpiar Filtros</button>
                 </div>
 
-                {/* Filtro de Servicios */}
                 <div className="mt-3 border-top pt-3">
                     <label className="form-label small d-block">Servicios ({filters.selectedServices.length} seleccionados)</label>
-                    <div className="d-flex flex-wrap gap-2"> {/* flex-wrap ayuda a evitar scroll horizontal */}
+                    <div className="d-flex flex-wrap gap-2">
                         {initialServices.map(service => (
                             <div key={service.id_servicio} className="form-check form-check-inline">
                                 <input

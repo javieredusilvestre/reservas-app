@@ -1,27 +1,24 @@
-// src/App.js (VERSION FINAL Y COMPLETA)
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { supabase } from './supabaseClient'; 
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import CabinList from './components/CabinList';
 import FilterBar from './components/FilterBar';
 import AdminDashboard from './components/AdminDashboard'; 
-import LoginModal from './components/LoginModal'; // Login Admin
-import RegisterModal from './components/RegisterModal'; // Registro Cliente
-import ClientLoginModal from './components/ClientLoginModal'; // Login Cliente
+import LoginModal from './components/LoginModal'; 
+import RegisterModal from './components/RegisterModal'; 
+import ClientLoginModal from './components/ClientLoginModal'; 
 import './styles.css'; 
 
-// =============================================================
-// UTILIDADES
-// =============================================================
+
 const simulateEmailConfirmation = async ({ recipient, reservationId, cabinId, dates }) => {
-    // Simulación de envío de correo (RF5)
+
     await new Promise(resolve => setTimeout(resolve, 500)); 
     console.log(`[RF5 Éxito] Correo de confirmación simulado enviado a ${recipient} para Reserva #${reservationId}.`);
     return { success: true, message: 'Correo enviado' };
 };
 
 const checkCabinAvailabilityDB = async (cabinId, startDate, endDate) => {
-    // Verifica solapamiento de fechas en DB
+
     const { count, error } = await supabase
         .from('reserva')
         .select('id_reserva', { count: 'exact' })
@@ -38,7 +35,7 @@ const checkCabinAvailabilityDB = async (cabinId, startDate, endDate) => {
 }
 
 const fetchNextAvailableDate = async (cabinId) => {
-    // Busca la fecha de fin más reciente para la disponibilidad futura
+
     const { data, error } = await supabase
         .from('reserva')
         .select('fecha_fin')
@@ -65,25 +62,24 @@ function AppContent() {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // Gestión de Autenticación
+
   const [is_admin, setIsAdmin] = useState(false); 
   const [showAdminLoginModal, setShowAdminLoginModal] = useState(false); 
   const [clientUser, setClientUser] = useState(null); 
   const [showRegisterModal, setShowRegisterModal] = useState(false); 
   const [showClientLoginModal, setShowClientLoginModal] = useState(false); 
 
-  // Estado de filtros
+
   const [filters, setFilters] = useState({ capacity: '', selectedServices: [], cabinType: '', startDate: '', endDate: '' });
   
-  // Estado para el filtro de fecha asíncrono
+
   const [availableCabinIdsByDate, setAvailableCabinIdsByDate] = useState(null);
   const [isDateFiltering, setIsDateFiltering] = useState(false);
 
-  // 1. Función para cargar datos iniciales (RF1 y RF4)
+
   const fetchInitialData = useCallback(async () => {
     setLoading(true);
     
-    // Cargar Cabañas y sus Servicios relacionados
     const { data: cabinData, error: cabinError } = await supabase
       .from('cabana') 
       .select(`*, cabana_servicio(id_servicio)`); 
@@ -116,7 +112,6 @@ function AppContent() {
     }));
     setCabins(formattedCabins);
 
-    // Cargar la lista maestra de Servicios
     const { data: serviceData, error: serviceError } = await supabase
       .from('servicio')
       .select('id_servicio, nombre_servicio'); 
@@ -135,7 +130,6 @@ function AppContent() {
   }, [fetchInitialData]);
 
   
-  // Lógica Asíncrona de Filtrado por Fecha Global (RF2)
   useEffect(() => {
     const { startDate, endDate } = filters;
     
@@ -171,36 +165,29 @@ function AppContent() {
   }, [filters.startDate, filters.endDate, cabins]);
 
 
-  // 2. Lógica de Filtrado Combinado (RF2)
   const filteredCabins = useMemo(() => {
     let resultCabins = cabins.filter(cabin => {
       
       const isDateFilterActive = filters.startDate && filters.endDate;
 
-      // 1. FILTRO DE FECHA (Si está activo, solo muestra las disponibles)
       if (isDateFilterActive) {
           if (availableCabinIdsByDate === null || !availableCabinIdsByDate.has(cabin.id_cabana)) {
               return false;
           }
       } 
       
-      // 2. EXCLUIR ESTADO "En Mantenimiento"
       if (!isDateFilterActive && cabin.estado === 'En Mantenimiento') {
           return false;
       }
       
-      // 3. FILTROS ESTÁNDAR 
       
-      // Por tipo/tamaño
       if (filters.cabinType) {
         const normalizedCabinType = cabin.tipo ? cabin.tipo.toLowerCase() : '';
         if (normalizedCabinType !== filters.cabinType.toLowerCase()) return false;
       }
 
-      // Por capacidad
       if (filters.capacity && cabin.capacidad < parseInt(filters.capacity)) return false;
       
-      // Por servicios
       if (filters.selectedServices.length > 0) {
         const cabinServiceIds = new Set(cabin.Servicios);
         if (!filters.selectedServices.every(serviceId => cabinServiceIds.has(parseInt(serviceId)))) return false;
@@ -213,7 +200,6 @@ function AppContent() {
   }, [cabins, filters, availableCabinIdsByDate]); 
 
 
-  // 3. Función para manejar la reserva (RF3 y RF5)
   const handleNewReservation = async (data) => {
     
     if (data.action === 'check_availability') {
@@ -244,7 +230,6 @@ function AppContent() {
                 throw new Error("La cabaña se reservó en este instante. Intente con otras fechas.");
             }
 
-            // a) Insertar en la tabla RESERVA (RF3)
             const { data: newReservation, error: reserveError } = await supabase
                 .from('reserva')
                 .insert([
@@ -263,7 +248,6 @@ function AppContent() {
             
             const reservationId = newReservation[0].id_reserva;
             
-            // b) Actualizar el estado de la cabaña (RF3)
             const { error: updateError } = await supabase
                 .from('cabana')
                 .update({ estado: 'Reservada' })
@@ -271,7 +255,6 @@ function AppContent() {
                 
             if (updateError) throw updateError;
             
-            // c) Notificación (RF5)
             await simulateEmailConfirmation({ 
                 recipient: Email, 
                 reservationId: reservationId, 
@@ -279,7 +262,6 @@ function AppContent() {
                 dates: `${startDate} al ${endDate}`
             });
             
-            // d) Actualizar estado local
             setCabins(prevCabins => 
                 prevCabins.map(cabin => 
                     cabin.id_cabana === cabinId ? { ...cabin, estado: "Reservada" } : cabin
@@ -296,9 +278,7 @@ function AppContent() {
     }
   };
   
-  // ----------------------------------------------------
-  // GESTIÓN DE CLIENTES/ADMIN
-  // ----------------------------------------------------
+
   const handleSuccessfulRegistration = (newUser) => {
       setClientUser({ id_usuario: newUser.id_usuario, nombre: newUser.nombre, email: newUser.email });
       setShowRegisterModal(false);
@@ -337,12 +317,12 @@ function AppContent() {
     alert('Sesión de cliente cerrada.');
   }
 
-  // LÓGICA DE LOGOUT DE ADMIN CON REDIRECCIÓN
+  
   const handleAdminLoginToggle = () => {
       if (is_admin) {
           setIsAdmin(false);
           alert("Sesión de administrador cerrada.");
-          navigate("/"); // Redirigir a la página principal
+          navigate("/");
       } else {
           setShowAdminLoginModal(true);
       }
@@ -370,17 +350,15 @@ function AppContent() {
   return (
     <div className="container mt-4 mb-5 app-container">
       
-      {/* HEADER con diseño hotelero */}
       <header className="navbar navbar-expand-lg navbar-light bg-light rounded shadow-sm px-4 mb-4">
         <h1 className="navbar-brand h3 mb-0">
-        Bienvenido a Parque Futangue
+          Bienvenido a Parque Futangue
         <span className="subtitle-brand d-block">Reserva de Cabañas</span>
         </h1>
             
         
         <nav className="main-nav d-flex flex-grow-1 justify-content-end align-items-center">
           
-          {/* 1. GRUPO DE ACCESO DE CLIENTE - 🛑 SOLO VISIBLE SI NO ES ADMIN 🛑 */}
           {!is_admin && ( 
             <>
               {clientUser ? (
@@ -411,9 +389,7 @@ function AppContent() {
               )}
             </>
           )} 
-          {/* Fin del bloque de cliente */}
-          
-          {/* 3. ACCESO DE ADMINISTRADOR */}
+
           {is_admin ? (
               <>
                 <Link to="/admin" className="btn btn-sm btn-outline-secondary me-2">Panel Admin</Link>
@@ -472,7 +448,6 @@ function AppContent() {
         } />
       </Routes>
 
-      {/* RENDERIZADO DE MODALES */}
       {showRegisterModal && (
           <RegisterModal 
               onClose={() => setShowRegisterModal(false)}
@@ -495,7 +470,6 @@ function AppContent() {
   );
 }
 
-// Wrapper para usar Router y Context (necesario para useNavigate)
 function App() {
     return (
         <Router>
