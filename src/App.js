@@ -372,8 +372,11 @@ function AppContent() {
       
       {/* HEADER con diseño hotelero */}
       <header className="navbar navbar-expand-lg navbar-light bg-light rounded shadow-sm px-4 mb-4">
-        <h1 className="navbar-brand h3 mb-0">Reserva de Cabañas - Parque Futangue</h1>
-        
+        <h1 className="navbar-brand h3 mb-0">
+        Bienvenido a Parque Futangue
+        <span className="subtitle-brand d-block">Reserva de Cabañas</span>
+        </h1>
+            
         
         <nav className="main-nav d-flex flex-grow-1 justify-content-end align-items-center">
           
