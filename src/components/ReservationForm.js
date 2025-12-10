@@ -1,9 +1,6 @@
-// src/components/ReservationForm.js (Corregido para consistencia RF5)
-
 import React, { useState } from 'react';
 
 function ReservationForm({ cabinId, onSubmit, onClose }) {
-  // Solo necesitamos el email del usuario para RF5, el nombre ya no es crítico.
   const [formData, setFormData] = useState({
     Email: '', // Mantener para notificación RF5
   });
@@ -29,7 +26,7 @@ function ReservationForm({ cabinId, onSubmit, onClose }) {
   return (
     <div className="reservation-form-overlay">
       <form onSubmit={handleSubmit} className="reservation-form">
-        <h4 className="mb-4">Confirmación de Datos (RF3/RF5)</h4>
+        <h4 className="mb-4">Confirmación de Datos </h4>
         
         <div className="mb-3">
             <label className="form-label">Email (Confirmación):</label>
